@@ -83,6 +83,7 @@ Definitions
  * The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in `IETF RFC 2119`_.
 
  * JavaScript Object Notation (JSON), and the terms object, name, value, array, and number, are defined in `IETF RTC 4627`_.
+   MapSetJSON documents have the standard JSON MIME type, "application/json".
 
 .. _IETF RFC 2119: http://www.ietf.org/rfc/rfc2119.txt
 .. _IETF RTC 4627: http://www.ietf.org/rfc/rfc4627.txt
@@ -558,7 +559,7 @@ Creating New Extensions
      the viewer should examine the "alternateTypes" member and interpret
      the node as one of those types if possible.
 
-.. _MapSetJSON Extension Registry: http://mapmixer.org/mapsetjson/ext/
+.. _MapSetJSON Extension Registry: http://mapmixer.org/mapsetjson/ext/registry/
 .. _MapSetJSON Home Page:  http://mapmixer.org/mapsetjson/
    
 Acknowledgments

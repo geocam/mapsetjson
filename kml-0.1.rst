@@ -26,7 +26,8 @@ Further information
 Introduction
 ============
 
-This extension adds KML support to the `MapSetJSON Core Specification`_.
+This extension adds the ability to include KML map layers in a map set.
+It extends the `MapSetJSON Core Specification`_.
 
 .. _MapSetJSON Core Specification: http://mapmixer.org/mapsetjson/spec/0.1/
 
