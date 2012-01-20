@@ -374,6 +374,8 @@ MapSetJSON object differently from other folders.
    viewer may use the "name" member of its root folder as the title of
    the view.
 
+.. Link Node Type:
+
 Link Node Type
 ~~~~~~~~~~~~~~
 
@@ -394,10 +396,10 @@ document, called the "subdocument" of the link.
    must be postponed until the user turns on the link's visibility.
 
  * When a link node becomes visible, the viewer must load the
-   subdocument and display the top-level children of the subdocument
-   root folder as direct children of the link node. The viewer must not
-   display the subdocument root folder as a separate entry. Interface
-   properties of the displayed entry ("name", "open",
+   subdocument and should display the top-level children of the
+   subdocument root folder as direct children of the link node. The
+   viewer must not display the subdocument root folder as a separate
+   entry. Interface properties of the displayed entry ("name", "open",
    "visibilityControl") may be specified in either the link node or the
    subdocument root folder, with the value of each member in the link
    node overriding the value in the subdocument root folder if both are
