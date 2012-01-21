@@ -57,8 +57,8 @@ Example
   {
     "mapsetjson": "0.1",
     "extensions": {
-      "kml": "http://mapmixer.org/mapsetjson/0.1/#kml",
-      "geojson": "http://mapmixer.org/mapsetjson/0.1/#geojson"
+      "kml": "http://mapmixer.org/mapsetjson/ext/kml/0.1/",
+      "geojson": "http://mapmixer.org/mapsetjson/ext/geojson/0.1/"
     },
     "root": {
       "type": "Folder",
@@ -522,8 +522,8 @@ Extensions Object Example
 ::
 
     "extensions": {
-      "kml": "http://mapmixer.org/mapsetjson/0.1/#kml",
-      "geojson": "http://mapmixer.org/mapsetjson/0.1/#geojson"
+      "kml": "http://mapmixer.org/mapsetjson/ext/kml/0.1/",
+      "geojson": "http://mapmixer.org/mapsetjson/ext/geojson/0.1/"
     }
 
 

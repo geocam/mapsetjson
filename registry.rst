@@ -11,6 +11,10 @@ specification.
 Extensions Published by the MapSetJSON Working Group
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+ * `Translation`_: Translate text labels in multiple languages
+
+   * Pre-0.1 draft
+
  * `KML`_: Include KML map layers
 
    * Pre-0.1 draft
@@ -23,14 +27,10 @@ Extensions Published by the MapSetJSON Working Group
 
    * Pre-0.1 draft
 
- * `Translation`_: Translate text labels in multiple languages
-
-   * Pre-0.1 draft
-
+.. _Translation: http://mapmixer.org/mapsetjson/ext/translation/0.1/
 .. _KML: http://mapmixer.org/mapsetjson/ext/kml/0.1/
 .. _GeoJSON: http://mapmixer.org/mapsetjson/ext/geojson/0.1/
 .. _Refresh: http://mapmixer.org/mapsetjson/ext/refresh/0.1/
-.. _Translation: http://mapmixer.org/mapsetjson/ext/translation/0.1/
 
 Third Party Extensions
 ~~~~~~~~~~~~~~~~~~~~~~

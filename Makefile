@@ -4,6 +4,7 @@ RST2HTML=rst2html.py --stylesheet=spec.css
 all: \
   build/spec/0.1/index.html \
   build/ext/registry/index.html \
+  build/ext/translation/0.1/index.html \
   build/ext/kml/0.1/index.html \
   build/ext/geojson/0.1/index.html \
   build/ext/refresh/0.1/index.html
@@ -20,6 +21,10 @@ build/spec/0.1/index.html: mapsetjson-0.1.rst spec.css
 
 build/ext/registry/index.html: registry.rst spec.css
 	[ -d build/ext/registry/ ] || mkdir -p build/ext/registry/
+	$(RST2HTML) $< $@
+
+build/ext/translation/0.1/index.html: translation-0.1.rst spec.css
+	[ -d build/ext/translation/0.1/ ] || mkdir -p build/ext/translation/0.1/
 	$(RST2HTML) $< $@
 
 build/ext/kml/0.1/index.html: kml-0.1.rst spec.css

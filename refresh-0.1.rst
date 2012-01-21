@@ -54,7 +54,7 @@ An example link node that will be refreshed every 60 seconds::
 Refresh Members
 ===============
 
-This extensions defines new members for link nodes (see `Link Node
+This extension defines new members for link nodes (see `Link Node
 Type`_) and extension types that model their behavior on link nodes (see
 `KML Node Type`_, `GeoJSON Node Type`_). These types are called
 "extended types" in the discussion below. To "refresh" means to fetch
