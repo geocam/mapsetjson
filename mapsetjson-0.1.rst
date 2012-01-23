@@ -289,6 +289,80 @@ represent nodes of the tree.
 
    * false (default): The node is not the master node.
 
+ * The node object may have a "crs" member, the value of which is a
+   coordinate reference system (CRS) object, as defined in the `GeoJSON
+   CRS specification`_.  This CRS specifies how to interpret coordinates
+   specified in other members of the node.  The default CRS is a
+   geographic coordinate reference system, using the WGS84 datum, and
+   with longitude and latitude units of decimal degrees.
+
+ * The node object may have a "bbox" member, whose value must be a
+   bounding box object as defined by the `GeoJSON bounding box
+   specification`_. The bounding box indicates the spatial coverage
+   of the resource.
+
+ * Node objects may have several other meta-data members that generally
+   do not impact the display of map content [#meta]_.  Viewers should
+   provide a way for users to view this meta-data. Authors of MapSetJSON
+   document should avoid defining these members in cases where they are
+   redundant and likely to cause confusion. For example, for nodes that
+   link to external content, the "dateModified" member is redundant with
+   the ``Last-Modified`` HTTP header of the linked content, and the HTTP
+   header's value is more likely to accurately reflect the last
+   modification time.  In the discussion below, "resource" means the
+   content the node links to.
+
+   * The node object may have a "description" member, whose value must
+     be a string describing the resource.
+
+   * The node object may have a "subject" member, whose value must be an
+     array of strings indicating subjects covered by the resource.
+     Subjects might be user-defined tags or might be drawn from a
+     subject thesaurus such as the `U.S. Library of Congress Subject
+     Headings`_.
+
+   * The node object may have a "coverage" member, whose value must be a
+     string containing a human-readable description of the temporal or
+     spatial coverage of the resource. (This member is a human-readable
+     complement to the machine-readable "bbox" member.)
+
+   * The node object may have a "creator" member, whose value must be a
+     string specifying the name of the entity primarily responsible for
+     making the resource.
+
+   * The node object may have a "contributors" member, whose value must be
+     an array of strings specifying the names of entities responsible for
+     making contributions to the resource.
+
+   * The node object may have a "publisher" member, whose value must be a
+     string specifying the name of the entity primarily responsible for
+     making the resource available.
+
+   * The node object may have a "rights" member, whose value must be a
+     string specifying rights held in and over the resource, such as
+     copyright.
+
+   * The node object may have a "license" member, whose value must be a
+     URL pointing to a license which grants the user privileges over the
+     resource.  Document authors should use the canonical URL of the
+     license when possible.
+
+   * The node object may have a "morePermissions" member, whose value
+     must be a string providing information about additional permissions
+     granted to the user beyond the license.
+
+   * The node object may have a "dateCreated" member, whose value must
+     be a string in the time format specified by `ISO 8601`_, indicating
+     when the resource was created.
+
+   * The node object may have a "dateModified" member, whose value must
+     be a string in the time format specified by `ISO 8601`_, indicating
+     when the resource was last modified.
+
+   * The node object may have a "dateAdded" member, whose value must
+     be a string in the time format specified by `ISO 8601`_, indicating
+     when the node was added to the map set.
+
  * Other members of the node object are interpreted according to its
    type, as defined below and in extensions to the MapSetJSON
    specification. In general, viewers should ignore node object members
@@ -296,6 +370,11 @@ represent nodes of the tree.
 
 This specification defines core node types. Additional node types are
 defined by extensions (see Extensions_).
+
+.. _ISO 8601: http://www.w3.org/TR/NOTE-datetime
+.. _GeoJSON CRS specification: http://geojson.org/geojson-spec.html#coordinate-reference-system-objects
+.. _GeoJSON bounding box specification: http://geojson.org/geojson-spec.html#bounding-boxes
+.. _U.S. Library of Congress Subject Headings: http://id.loc.gov/authorities/subjects.html
 
 .. Folder Node Type:
 
@@ -449,19 +528,12 @@ A bounding box view ("type": "BoundingBox") specifies that the map
 should view the minimum-size area containing the given geospatial
 bounding box.
 
- * A bounding box view may have a "crs" member, the value of which is a
-   coordinate reference system (CRS) object, as defined in the `GeoJSON
-   CRS specification`_.  This CRS specifies how to interpret the
-   bounding box coordinates.  The default CRS is a geographic coordinate
-   reference system, using the WGS84 datum, and with longitude and
-   latitude units of decimal degrees.
+ * A bounding box view may have a "crs" member, which has the same meaning
+   as for a node object.
 
  * A bounding box view must have a "bbox" member, the value of which is
    an array of coordinate pairs as defined in the `GeoJSON bounding box
    specification`_.
-
-.. _GeoJSON CRS specification: http://geojson.org/geojson-spec.html#coordinate-reference-system-objects
-.. _GeoJSON bounding box specification: http://geojson.org/geojson-spec.html#bounding-boxes
 
 Bounding Box View Type Example
 ------------------------------
@@ -565,7 +637,9 @@ Creating New Extensions
 Acknowledgments
 ===============
 
-This specification was modeled in part on GeoJSON_ and KML_.
+Parts of this specification are modeled on GeoJSON_, KML_, the `Dublin
+Core Metadata Element Set`_ and the `Creative Commons Rights Expression
+Language`_.
 
 .. _GeoJSON: http://geojson.org/geojson-spec.html
 .. _KML: http://code.google.com/apis/kml/documentation/kmlreference.html
@@ -581,3 +655,10 @@ Footnotes
 .. [#visibilityControl] The visibilityControl member is modeled on KML's listItemType_.
 
 .. _listItemType: http://code.google.com/apis/kml/documentation/kmlreference.html#listItemType
+
+.. [#meta] These members are roughly modeled on the `Dublin Core Metadata Element Set`_ and
+   the `Creative Commons Rights Expression Language`_.
+
+ .. _Dublin Core Metadata Element Set: http://dublincore.org/documents/dces/
+
+ .. _Creative Commons Rights Expression Language: http://wiki.creativecommons.org/CcREL

@@ -39,7 +39,7 @@ This document provides Spanish (es) and English (en) translations for
 all text labels and subdocuments, and provides French (fr) and Chinese
 (cn) translations for some but not all elements. If the user does not
 specify a language preference, the displayed language defaults to
-French, or to English if a French translation is not available::
+French, or to English as a fallback::
 
   {
     "mapsetjson": "0.1",
@@ -87,10 +87,44 @@ French, or to English if a French translation is not available::
     }
   }
 
+Localizing the example above according to the default language
+preferences would yield the following document. Note that the English
+translation is used for elements where a French translation is not
+available::
+
+  {
+    "mapsetjson": "0.1",
+    "extensions": {
+      "kml": "http://mapmixer.org/mapsetjson/ext/kml/0.1/"
+    },
+    "root": {
+      "type": "Folder",
+      "children": [
+        {
+          "type": "kml.KML",
+          "name": "Météo",
+          "url": "http://mapmixer.org/mapsetjson/example/weather-en.kml"
+        }
+        {
+          "type": "kml.KML",
+          "name": "Flood levels",
+          "url": "http://mapmixer.org/mapsetjson/example/floodLevels-en.kml"
+        }
+      ]
+    }
+  }
+
+
 Translation Members
 ===================
 
-This extension defines two new members for the MapSetJSON object:
+This extension defines new members for the MapSetJSON object:
+
+ * The MapSetJSON object may have a member
+   "translation.defaultLanguages", whose value is an array of strings
+   specifying preferred languages, in order from most to least
+   preferred, which should be presented to users who do not otherwise
+   specify a language preference. See `Localization Behavior`_.
 
  * The MapSetJSON object may have a member "translation.text", whose
    value is a translation object that provides localized versions of
@@ -98,7 +132,8 @@ This extension defines two new members for the MapSetJSON object:
 
  * The MapSetJSON object may have a member "translation.urls", whose
    value is a translation object that provides URLs ("url" members)
-   referring to localized versions of linked subdocuments.
+   referring to localized versions of linked subdocuments. See
+   `Translation Objects`_.
 
 .. Localized String Objects:
 
@@ -164,6 +199,8 @@ document::
       "es": "Niveles de Inundación"
     }
   }
+
+.. Localization Behavior:
 
 Localization Behavior
 =====================
