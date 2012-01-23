@@ -654,10 +654,10 @@ Footnotes
 
 .. [#visibilityControl] The visibilityControl member is modeled on KML's listItemType_.
 
-.. _listItemType: http://code.google.com/apis/kml/documentation/kmlreference.html#listItemType
-
 .. [#meta] These members are roughly modeled on the `Dublin Core Metadata Element Set`_ and
    the `Creative Commons Rights Expression Language`_.
+
+.. _listItemType: http://code.google.com/apis/kml/documentation/kmlreference.html#listItemType
 
  .. _Dublin Core Metadata Element Set: http://dublincore.org/documents/dces/
 
