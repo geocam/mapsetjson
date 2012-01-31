@@ -164,9 +164,6 @@ Inherits from:
 
 (No additional members.)
 
-A folder node ("type": "Folder") defines a ordered collection of node
-objects, which can include subfolders.
-
 Folder Example
 ~~~~~~~~~~~~~~
 
