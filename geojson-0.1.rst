@@ -90,3 +90,50 @@ Inherits from:
 
 .. _MapSetJSON Include Extension: http://mapmixer.org/mapsetjson/ext/include/0.1/
 .. _OpenLayers GeoJSON implementation: http://openlayers.org/dev/examples/vector-formats.html
+
+GeoJSON Example
+~~~~~~~~~~~~~~~
+
+::
+
+  {
+    // members inherited from Object
+    "type": "geojson.GeoJSON",
+    "id": "...",
+
+    // members inherited from Node
+    "name": "...",
+    "crs": { (CRS object ) },
+    "bbox": [
+      [-180.0, -90.0],
+      [180.0, 90.0]
+    ],
+    "description": "...",
+    "subject": [
+      "(Key word 1)",
+      ...
+    ],
+    "coverage": "(Human readable description of temporal or spatial coverage)",
+    "creator": "(Name of entity)",
+    "contributors": [
+      "(Name of entity 1)",
+      ...
+    ],
+    "publisher": "(Name of entity)",
+    "rights": "Copyright (C) ...",
+    "license": "http://creativecommons.org/licenses/ ...",
+    "morePermissions": "You may also ...",
+    "dateCreated": "2012-01-30T12:00:00Z",
+    "dateModified": "2012-01-30T12:00:00Z",
+    "dateAdded": "2012-01-30T12:00:00Z",
+
+    // members inherited from Layer
+    "show": false,
+    "drawOrder": 1000,
+    "master": false,
+    "url": "http://example.com/layer.json",
+
+    // members inherited from folder.FolderLike
+    "open": false,
+    "visibilityControl": "check"
+  }
