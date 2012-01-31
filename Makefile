@@ -5,9 +5,11 @@ all: \
   build/spec/0.1/index.html \
   build/ext/registry/index.html \
   build/ext/translation/0.1/index.html \
+  build/ext/folder/0.1/index.html \
+  build/ext/include/0.1/index.html \
+  build/ext/refresh/0.1/index.html \
   build/ext/kml/0.1/index.html \
-  build/ext/geojson/0.1/index.html \
-  build/ext/refresh/0.1/index.html
+  build/ext/geojson/0.1/index.html
 
 clean:
 	rm -rf build
@@ -27,14 +29,22 @@ build/ext/translation/0.1/index.html: translation-0.1.rst spec.css
 	[ -d build/ext/translation/0.1/ ] || mkdir -p build/ext/translation/0.1/
 	$(RST2HTML) $< $@
 
+build/ext/folder/0.1/index.html: folder-0.1.rst spec.css
+	[ -d build/ext/folder/0.1/ ] || mkdir -p build/ext/folder/0.1/
+	$(RST2HTML) $< $@
+
+build/ext/include/0.1/index.html: include-0.1.rst spec.css
+	[ -d build/ext/include/0.1/ ] || mkdir -p build/ext/include/0.1/
+	$(RST2HTML) $< $@
+
+build/ext/refresh/0.1/index.html: refresh-0.1.rst spec.css
+	[ -d build/ext/refresh/0.1/ ] || mkdir -p build/ext/refresh/0.1/
+	$(RST2HTML) $< $@
+
 build/ext/kml/0.1/index.html: kml-0.1.rst spec.css
 	[ -d build/ext/kml/0.1/ ] || mkdir -p build/ext/kml/0.1/
 	$(RST2HTML) $< $@
 
 build/ext/geojson/0.1/index.html: geojson-0.1.rst spec.css
 	[ -d build/ext/geojson/0.1/ ] || mkdir -p build/ext/geojson/0.1/
-	$(RST2HTML) $< $@
-
-build/ext/refresh/0.1/index.html: refresh-0.1.rst spec.css
-	[ -d build/ext/refresh/0.1/ ] || mkdir -p build/ext/refresh/0.1/
 	$(RST2HTML) $< $@

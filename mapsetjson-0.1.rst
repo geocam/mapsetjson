@@ -10,7 +10,7 @@ Revision
   Pre-0.1 draft
 
 Date
-  20 Jan 2012
+  30 Jan 2012
 
 Canonical URL of this document
   http://mapmixer.org/mapsetjson/spec/0.1/
@@ -49,6 +49,8 @@ appear in the common view for all team members. Because it is easy to
 customize a map set, even hastily formed teams with minimal
 computing expertise can assemble map sets to support their needs.
 
+.. Document Example:
+
 Example
 =======
 
@@ -56,493 +58,498 @@ Example
 
   {
     "mapsetjson": "0.1",
+    "type": "Document",
     "extensions": {
       "kml": "http://mapmixer.org/mapsetjson/ext/kml/0.1/",
       "geojson": "http://mapmixer.org/mapsetjson/ext/geojson/0.1/"
     },
-    "root": {
-      "type": "Folder",
-      "children": [
-        {
-          "type": "kml.KML",
-          "name": "Earthquake Intensity",
-          "url": "http://mapmixer.org/mapsetjson/example/eqintensity.kml"
-        },
-        {
-          "type": "geojson.GeoJSON",
-          "name": "Fire Vehicle Locations",
-          "url": "http://mapmixer.org/mapsetjson/example/vehicles.json"
-        }
-      ]
-    }
+    "children": [
+      {
+        "type": "kml.KML",
+        "name": "Earthquake Intensity",
+        "url": "http://mapmixer.org/mapsetjson/example/eqintensity.kml"
+      },
+      {
+        "type": "geojson.GeoJSON",
+        "name": "Fire Vehicle Locations",
+        "url": "http://mapmixer.org/mapsetjson/example/vehicles.json"
+      }
+    ]
   }
 
 Definitions
 ===========
 
- * The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in `IETF RFC 2119`_.
+ * The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+   document are to be interpreted as described in `IETF RFC 2119`_.
 
- * JavaScript Object Notation (JSON), and the terms object, name, value, array, and number, are defined in `IETF RTC 4627`_.
-   MapSetJSON documents have the standard JSON MIME type, "application/json".
+ * JavaScript Object Notation (JSON), and the terms "object", "name", "value",
+   "array", and "number", are defined in `IETF RTC 4627`_.  MapSetJSON
+   documents have the standard JSON MIME type, "application/json".
+
+ * A "viewer" is a software tool that presents the interactive interface
+   specified by a MapSetJSON document to a user.
+
+ * An "interpreter" is a software tool that interprets a MapSetJSON
+   document.  An interpreter might be a viewer or any other type of
+   tool, such as a validator.
 
 .. _IETF RFC 2119: http://www.ietf.org/rfc/rfc2119.txt
 .. _IETF RTC 4627: http://www.ietf.org/rfc/rfc4627.txt
 
-MapSetJSON Object
-=================
-
-MapSetJSON always consists of a single object. This object (referred to
-as the MapSetJSON object below) represents a set of map layers.
-
- * The MapSetJSON object may have any number of members (name/value pairs).
-
- * The MapSetJSON object must have a member with the name "mapsetjson",
-   the value of which must be a string identifying the version of the
-   MapSetJSON specification the document conforms to.  For example:
-   "0.1". The existence of this member distinguishes MapSetJSON from
-   other JSON document types.
-
- * The MapSetJSON object may have a "url" member, the value of which
-   must be a string indicating a canonical URL where the document may be
-   found.
-
- * The MapSetJSON object may have an "extensions" member, the value of
-   which must be an extensions object (see Extensions_).
-
- * The MapSetJSON object may have a "view" member, the value of which
-   must be a view object (see `View Object`_).
-
- * The MapSetJSON object must have a "root" member, the value of which
-   must be a folder node object (see `Folder Node Type`_).
-
- * The MapSetJSON object may have other members defined in extensions
-   (see Extensions_). In general, viewers should ignore MapSetJSON
-   object members whose names they do not recognize.
-
-MapSetJSON Object Example
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-  {
-    "mapsetjson": "0.1",
-    "url": "http://example.com/thisDocument.json",
-    "extensions": {
-      ...
-    },
-    "view": {
-    },
-    "root": {
-      ...
-    }
-  }
-
-.. Layer Selection Interface:
-
-Layer Selection Interface
-=========================
-
-When a map set has many layers, viewing all of them simultaneously may
-be too resource intensive or create overwhelming map clutter. The layer
-selection interface allows users to control which layers are visible and
-when their contents are loaded.
-
-MapSetJSON document authors can organize their layers hierarchically in
-folders and control the ordering of folder children. This organization,
-which controls the presentation of the layer selection interface, can
-help users to find the right layer in a large map set.
-
-Layer Hierarchy Example
-~~~~~~~~~~~~~~~~~~~~~~~
-
-This folder hierarchy::
-
-  {
-    "type": "Folder",
-    "name": "Folder 1",
-    "children": [
-      {
-        "type": "Link",
-        "name": "Link 1.A",
-        "url": "...",
-        "show": true
-      },
-      {
-        "type": "Folder",
-        "name": "Folder 1.B",
-        "children": [
-          {
-            "type": "Link",
-            "name": "Link 1.B.1",
-            "url": "..."
-          },
-          {
-            "type": "Link",
-            "name": "Link 1.B.2",
-            "url": "..."
-          }
-        ]
-      }
-    ]
-  }
-
-Corresponds to this hierarchical display::
-
-  [ ] Folder 1
-   |--[X] Link 1.A
-   |--[ ] Folder 1.B
-       |--[ ] Link 1.B.1
-       |--[ ] Link 1.B.2
-
-In this initial view, the empty brackets [ ] represent hidden map data
-and the filled brackets [X] represent visible map data, based on the
-"show" member which is false by default.
-
-Layer Selection Interface Affordances
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The layer selection interface includes an entry for each MapSetJSON
-node. Each node entry should provide the following affordances:
-
- * Show/Hide: The user should be able to show the node (displaying its
-   contents in the map) and hide the node.
-
- * Open/Collapse: If the node entry is for a collection type (a folder
-   node, or a link node after the referenced subdocument has been
-   loaded), the user should be able to open the node (displaying the
-   node entries of its children in the layer selection interface) and
-   collapse the node (hiding the node entries of its children).
-
- * Load State: There should be a display (for example, an icon in the
-   node entry) that distinguishes between the following load states:
-
-   * Unloaded: The viewer has not yet attempted to load the node (it is hidden).
-
-   * Loading: The viewer is fetching, parsing, or rendering the node contents.
-
-   * Loaded: The node contents are visible in the map.
-
-   * Error: There was a problem with fetching, parsing, or rendering the node.
-
- * Refresh: The user should be able to refresh the node contents, causing
-   the viewer to fetch and render any updated external data.
-
- * View Error: The user should be able to get additional information about the
-   error state of a node.
-
-Node Objects
-============
-
-The "map set" of MapSetJSON is actually a tree whose leaf nodes are
-links to map content and whose internal nodes are folders. Node objects
-represent nodes of the tree.
-
- * A node object may have any number of members (name/value pairs).
-
- * A node object must have a "type" member, the value of which must
-   be a string indicating the type of node (several types are defined
-   later in this section, and extensions may define additional types).
-
- * A node object may have an "alternateTypes" member, the value of which
-   must be an array of strings indicating alternate types.  If a viewer
-   does not support the type given in the "type" field, it should
-   attempt to fall back to interpreting the node using one of the types
-   in the "alternateTypes" field, trying them in order and using the
-   first one that it supports.
-
- * A node object may have a "name" member, the value of which must be
-   a string specifying the name of the node as it should be displayed
-   in the layer selection interface (see `Layer Selection Interface`_).
-
- * A node object may have an "id" member, the value of which must be a
-   string specifying an identifier for the node. The identifier for each
-   node, if specified, must be unique over the scope of the MapSetJSON
-   document.
-
- * A node object may have a "show" member, the value of which must be a
-   boolean indicating the visibility of the node's contents:
-
-   * true: The node's contents should be displayed in the map when the
-     map set is first loaded.
-
-   * false (default): The node's contents should not be
-     displayed. Furthermore, loading of the contents should be postponed
-     until the user turns on visibility of the node.
-
- * A node object may have a "drawOrder" member, the value of which must
-   be an integer defining the stacking order for map data in overlapping
-   layers. Viewers should render layers with higher values on top of
-   layers with lower values. Draw order specifications in the primary
-   MapSetJSON document take precedence over those found in linked
-   subdocuments.
-
- * A node object may have a "master" member, the value of which must be
-   a boolean indicating whether this is the master node for the map
-   set. The document must not have more than one master node.
-
-   * true: The node is the master node. If the node's contents contain
-     interface controls, such as an initial view or a tour, the viewer
-     should use those controls for the overall map set display.  If the
-     primary MapSetJSON document and the master node contents both
-     specify an interface control (see `View Object`_), the value in the
-     primary document takes precedence.
-
-   * false (default): The node is not the master node.
-
- * The node object may have a "crs" member, the value of which is a
-   coordinate reference system (CRS) object, as defined in the `GeoJSON
-   CRS specification`_.  This CRS specifies how to interpret coordinates
-   specified in other members of the node.  The default CRS is a
-   geographic coordinate reference system, using the WGS84 datum, and
-   with longitude and latitude units of decimal degrees.
-
- * The node object may have a "bbox" member, whose value must be a
-   bounding box object as defined by the `GeoJSON bounding box
-   specification`_. The bounding box indicates the spatial coverage
-   of the resource.
-
- * Node objects may have several other meta-data members that generally
-   do not impact the display of map content [#meta]_.  Viewers should
-   provide a way for users to view this meta-data. Authors of MapSetJSON
-   document should avoid defining these members in cases where they are
-   redundant and likely to cause confusion. For example, for nodes that
-   link to external content, the "dateModified" member is redundant with
-   the ``Last-Modified`` HTTP header of the linked content, and the HTTP
-   header's value is more likely to accurately reflect the last
-   modification time.  In the discussion below, "resource" means the
-   content the node links to.
-
-   * The node object may have a "description" member, whose value must
-     be a string describing the resource.
-
-   * The node object may have a "subject" member, whose value must be an
-     array of strings indicating subjects covered by the resource.
-     Subjects might be user-defined tags or might be drawn from a
-     subject thesaurus such as the `U.S. Library of Congress Subject
-     Headings`_.
-
-   * The node object may have a "coverage" member, whose value must be a
-     string containing a human-readable description of the temporal or
-     spatial coverage of the resource. (This member is a human-readable
-     complement to the machine-readable "bbox" member.)
-
-   * The node object may have a "creator" member, whose value must be a
-     string specifying the name of the entity primarily responsible for
-     making the resource.
-
-   * The node object may have a "contributors" member, whose value must be
-     an array of strings specifying the names of entities responsible for
-     making contributions to the resource.
-
-   * The node object may have a "publisher" member, whose value must be a
-     string specifying the name of the entity primarily responsible for
-     making the resource available.
-
-   * The node object may have a "rights" member, whose value must be a
-     string specifying rights held in and over the resource, such as
-     copyright.
-
-   * The node object may have a "license" member, whose value must be a
-     URL pointing to a license which grants the user privileges over the
-     resource.  Document authors should use the canonical URL of the
-     license when possible.
-
-   * The node object may have a "morePermissions" member, whose value
-     must be a string providing information about additional permissions
-     granted to the user beyond the license.
-
-   * The node object may have a "dateCreated" member, whose value must
-     be a string in the time format specified by `ISO 8601`_, indicating
-     when the resource was created.
-
-   * The node object may have a "dateModified" member, whose value must
-     be a string in the time format specified by `ISO 8601`_, indicating
-     when the resource was last modified.
-
-   * The node object may have a "dateAdded" member, whose value must
-     be a string in the time format specified by `ISO 8601`_, indicating
-     when the node was added to the map set.
-
- * Other members of the node object are interpreted according to its
-   type, as defined below and in extensions to the MapSetJSON
-   specification. In general, viewers should ignore node object members
-   whose names they do not recognize.
-
-This specification defines core node types. Additional node types are
-defined by extensions (see Extensions_).
-
+Top-Level Document Structure
+============================
+
+A MapSetJSON document consists of a single JSON object which is an
+instance of the Document class.  See `Document Class`_.
+
+Classes
+=======
+
+MapSetJSON defines classes of objects, following these conventions:
+
+ * An instance of a class is represented as a JSON object.
+
+ * A class instance JSON object must have a "type" field, whose value
+   must be a string indicating the name of the class.
+
+ * When we say class B "inherits from" class A, we mean that all of the
+   members allowed or required by class A are also allowed or required
+   by class B, unless otherwise noted. A is a "parent" or "superclass"
+   of B and B is a "subclass" of A.
+
+ * A "concrete" class may be instantiated in a document. An "abstract"
+   class is defined solely for use as a superclass of other classes. It
+   must not be instantiated in a document.
+
+ * Interpreters should generally ignore members of a class instance JSON
+   object that they do not recognize. This allows each interpreter to
+   make best effort at processing documents using MapSetJSON extensions
+   the interpreter does not support.
+
+This specification defines the following class inheritance hierarchy:
+
+ * Object (abstract)
+
+   * Node (abstract)
+
+     * Collection (abstract)
+
+       * Document
+
+     * Layer (abstract)
+
+   * View (abstract)
+
+     * BoundingBoxView
+
+Additional classes may be defined in MapSetJSON extensions.
+
+Value Types
+~~~~~~~~~~~
+
+When stating the value type of class members, we will use standard JSON
+types such as ``array`` and ``number``, as well as the following:
+
++------------+--------------+--------------------------------------------+--------------------------+
+|Type        |JSON Type     |Example                                     |Definition                |
++============+==============+============================================+==========================+
+|URL         |string        |``"http://example.com/"``                   |A URL, in the             |
+|            |              |                                            |standard format           |
+|            |              |                                            |defined by `RFC           |
+|            |              |                                            |1738`_.                   |
++------------+--------------+--------------------------------------------+--------------------------+
+|timestamp   |string        |``"2012-01-30T12:00:00Z"``                  |A timestamp (date         |
+|            |              |                                            |and time), in the         |
+|            |              |                                            |standard format           |
+|            |              |                                            |defined by `ISO           |
+|            |              |                                            |8601`_.                   |
++------------+--------------+--------------------------------------------+--------------------------+
+|CRS         |object        |                                            |Coordinate reference      |
+|            |              |::                                          |system (CRS) object, as   |
+|            |              |                                            |defined in the `GeoJSON   |
+|            |              | {                                          |CRS specification`_. The  |
+|            |              |   "type": "name",                          |default CRS is a          |
+|            |              |   "properties": {                          |geographic coordinate     |
+|            |              |     "name": "urn:ogc:def:crs:OGC:1.3:CRS84"|reference system, using   |
+|            |              |   }                                        |the WGS84 datum, with     |
+|            |              | }                                          |longitude and latitude    |
+|            |              |                                            |units of decimal degrees. |
++------------+--------------+--------------------------------------------+--------------------------+
+|bounding box|array of      |                                            |Geospatial bounding box as|
+|            |arrays of     |::                                          |defined by the `GeoJSON   |
+|            |numbers       |                                            |bounding box              |
+|            |              | [                                          |specification`_.          |
+|            |              |   [-180.0, -90.0],                         |                          |
+|            |              |   [180.0, 90.0]                            |                          |
+|            |              | ]                                          |                          |
++------------+--------------+--------------------------------------------+--------------------------+
+|reference   |string        |``"x17"``                                   |A reference is a string   |
+|            |              |                                            |that is not intended to be|
+|            |              |                                            |meaningful to users and   |
+|            |              |                                            |does not need to be       |
+|            |              |                                            |translated if the document|
+|            |              |                                            |is localized in multiple  |
+|            |              |                                            |languages.                |
++------------+--------------+--------------------------------------------+--------------------------+
+
+.. _RFC 1738: http://tools.ietf.org/html/rfc1738
 .. _ISO 8601: http://www.w3.org/TR/NOTE-datetime
-.. _GeoJSON CRS specification: http://geojson.org/geojson-spec.html#coordinate-reference-system-objects
-.. _GeoJSON bounding box specification: http://geojson.org/geojson-spec.html#bounding-boxes
-.. _U.S. Library of Congress Subject Headings: http://id.loc.gov/authorities/subjects.html
 
-.. Folder Node Type:
+Object Class
+~~~~~~~~~~~~
 
-Folder Node Type
+The Object class is an abstract superclass for all MapSetJSON classes.
+
+Abstract class:
+  Yes
+
+Inherits from:
+  (none)
+
++------------------+---------+----------------+------------------------------------+
+|Member            |Type     |Values          |Meaning                             |
++==================+=========+================+====================================+
+|``type``          |string   |required        |The class of which this object is a |
+|                  |         |                |member.                             |
++------------------+---------+----------------+------------------------------------+
+|``alternateTypes``|array of |optional        |Fallback options in case the        |
+|                  |strings  |                |``type`` class of this object is not|
+|                  |         |                |supported by the interpreter (for   |
+|                  |         |                |example, the class might be defined |
+|                  |         |                |by an experimental MapSetJSON       |
+|                  |         |                |extension.)                         |
+|                  |         |                |                                    |
+|                  |         |                |If it makes sense to interpret the  |
+|                  |         |                |object as an instance of more       |
+|                  |         |                |commonly supported classes, those   |
+|                  |         |                |classes may be specified here in    |
+|                  |         |                |preference order.                   |
++------------------+---------+----------------+------------------------------------+
+|``id``            |reference|optional        |An identifier that can be used to   |
+|                  |         |                |refer to this object. Must be unique|
+|                  |         |                |over the scope of a MapSetJSON      |
+|                  |         |                |document.                           |
++------------------+---------+----------------+------------------------------------+
+
+Node Class
+~~~~~~~~~~
+
+Node objects control content to be rendered in a map and might appear as
+entries in the layer selection interface.
+
+Some members of Node are marked below as meta-data [#meta]_. Viewers
+should offer users the ability to view a summary of a node's meta-data
+members but can otherwise ignore them.
+
+Authors of MapSetJSON documents should avoid defining meta-data members
+in cases where they are redundant and likely to cause confusion. For
+example, for nodes that link to external content, the "dateModified"
+member is redundant with the ``Last-Modified`` HTTP header of the linked
+content, and the HTTP header's value is more likely to accurately
+reflect the last modification time.
+
+In the discussion below, "resource" can refer to the overall MapSetJSON
+document (if the Node is a Document) or content the node links to (if
+the Node is a Layer).
+
+Abstract class:
+  Yes
+
+Inherits from:
+  Object
+
++-------------------+----------+----------------+------------------------------------+
+|Member             |Type      |Values          |Meaning                             |
++===================+==========+================+====================================+
+|``name``           |string    |optional        |User-visible name for this node.  If|
+|                   |          |                |this node is a Document, the name   |
+|                   |          |                |should be used as the document      |
+|                   |          |                |title. Otherwise it should be used  |
+|                   |          |                |as the node's label in the layer    |
+|                   |          |                |selection interface.                |
++-------------------+----------+----------------+------------------------------------+
+|``crs``            |CRS       |optional        |Coordinate reference system used to |
+|                   |          |(default: WGS84)|interpret coordinates in other      |
+|                   |          |                |members of the node.                |
++-------------------+----------+----------------+------------------------------------+
+|``bbox``           |bounding  |optional        |Bounding box around the spatial     |
+|                   |box       |                |coverage of the resource.           |
++-------------------+----------+----------------+------------------------------------+
+|``description``    |string    |optional        |(Meta-data.) Description of the     |
+|                   |          |                |resource.                           |
++-------------------+----------+----------------+------------------------------------+
+|``subject``        |array of  |optional        |(Meta-data.) Subjects covered by the|
+|                   |strings   |                |resource. Subjects might be         |
+|                   |          |                |user-defined tags or might be drawn |
+|                   |          |                |from a subject thesaurus such as the|
+|                   |          |                |`U.S. Library of Congress Subject   |
+|                   |          |                |Headings`_.                         |
++-------------------+----------+----------------+------------------------------------+
+|``coverage``       |string    |optional        |(Meta-data.) Human-readable         |
+|                   |          |                |description of the temporal or      |
+|                   |          |                |spatial coverage of the             |
+|                   |          |                |resource. (This member is a         |
+|                   |          |                |human-readable complement to the    |
+|                   |          |                |machine-readable ``bbox`` member.)  |
++-------------------+----------+----------------+------------------------------------+
+|``creator``        |string    |optional        |(Meta-data.) Name of the entity     |
+|                   |          |                |primarily responsible for making the|
+|                   |          |                |resource.                           |
++-------------------+----------+----------------+------------------------------------+
+|``contributors``   |string    |optional        |(Meta-data.) Names of entities who  |
+|                   |          |                |contributed to the resource.        |
++-------------------+----------+----------------+------------------------------------+
+|``publisher``      |string    |optional        |(Meta-data.) Name of the entity     |
+|                   |          |                |primarily responsible for making the|
+|                   |          |                |resource available.                 |
++-------------------+----------+----------------+------------------------------------+
+|``rights``         |string    |optional        |(Meta-data.) Rights held in and over|
+|                   |          |                |the resource, such as copyright.    |
++-------------------+----------+----------------+------------------------------------+
+|``license``        |URL       |optional        |(Meta-data.) URL of a license       |
+|                   |          |                |granting privileges over the        |
+|                   |          |                |resource. Use canonical URL when    |
+|                   |          |                |possible.                           |
++-------------------+----------+----------------+------------------------------------+
+|``morePermissions``|string    |optional        |(Meta-data.) Information about      |
+|                   |          |                |additional privileges beyond those  |
+|                   |          |                |granted by the license.             |
++-------------------+----------+----------------+------------------------------------+
+|``dateCreated``    |timestamp |optional        |(Meta-data.) When the resource was  |
+|                   |          |                |created.                            |
++-------------------+----------+----------------+------------------------------------+
+|``dateModified``   |timestamp |optional        |(Meta-data.) When the resource was  |
+|                   |          |                |last modified.                      |
++-------------------+----------+----------------+------------------------------------+
+|``dateAdded``      |timestamp |optional        |(Meta-data.) When the resource was  |
+|                   |          |                |added to the map set.               |
++-------------------+----------+----------------+------------------------------------+
+
+Collection Class
 ~~~~~~~~~~~~~~~~
 
-A folder node ("type": "Folder") defines a ordered collection of node
-objects, which can include subfolders.
+A Collection object is a Node that contains other Nodes.
 
- * A folder node must have a "children" member, whose value must be
-   an array of node objects.
+Abstract class:
+  Yes
 
- * A folder node may have an "open" member, whose value must be a
-   boolean:
+Inherits from:
+  Node
 
-   * true: The viewer's layer selection interface will display
-     the folder in the open state when first loaded.
++-------------------+----------+----------------+------------------------------------+
+|Member             |Type      |Values          |Meaning                             |
++===================+==========+================+====================================+
+|``children``       |array of  |required        |Ordered list of children contained  |
+|                   |Node      |                |in the collection.                  |
+|                   |objects   |                |                                    |
++-------------------+----------+----------------+------------------------------------+
 
-   * false (default): The viewer will display the folder in the
-     collapsed state.
-
- * A folder node may have an "visibilityControl" member, whose value
-   must be a string specifying how the folder's children should appear
-   in the layer selection interface [#visibilityControl]_:
-
-   * "check" (default): The visibility of each folder child is tied to
-     the value of its checkbox. Checking the folder checkbox toggles
-     the visibility of all folder children.
-
-   * "radioFolder": At most one child may be visible at a time.
-
-   * "checkOffOnly": The user may not turn on all children by checking
-     the folder checkbox. This setting is useful when loading all
-     children at the same time would be too resource intensive or create
-     overwhelming map clutter.
-
-   * "checkHideChildren": The visibility of all folder children should
-     be controlled by the visibility of the folder. The children
-     themselves should not be displayed in the layer selection
-     interface. The user may not open the folder.
-
-Folder Node Type Example
-------------------------
-
-::
-
-  {
-    "type": "Folder",
-    "name": "Weather",
-    "open": false,
-    "visibilityControl": "check",
-    "children": [
-      ...
-    ]
-  }
-
-Root Folder
------------
-
-Viewers should display the folder specified as the "root" member of the
-MapSetJSON object differently from other folders.
-
- * If the MapSetJSON document is the primary document (that is, the
-   primary subject of the view), the viewer should not display its root
-   folder itself in the layer selection interface. The root folder's
-   "open" member should be ignored, and its children should be listed as
-   the top-level items in the layer selection interface.
-
- * Since the root folder is not displayed in the layer selection
-   interface, the viewer may provide a "show all" checkbox widget used
-   to toggle all children of the root folder. However, the "show all"
-   widget should not be displayed if the root folder's
-   "visibilityControl" member is specified to be a value other than
-   the default "check".
-
- * If the MapSetJSON document is the primary subject of the view, the
-   viewer may use the "name" member of its root folder as the title of
-   the view.
-
-.. Link Node Type:
-
-Link Node Type
+Document Class
 ~~~~~~~~~~~~~~
 
-A link node ("type": "Link") defines a link to an external MapSetJSON
-document, called the "subdocument" of the link.
+A Document object defines the top level of a MapSetJSON document. There must be exactly
+one Document object in each MapSetJSON file.
 
- * A link node must have a member "url", whose value is a string
-   specifying the URL of the subdocument. The URL may contain a fragment
-   identifier starting with a hash mark #.  If so, the fragment must
-   refer to a node in the external document by its "id" member.  The
-   viewer must use the referenced node in place of the subdocument's
-   root node.
+Abstract class:
+  No
 
- * A link node may have members "open" and "visibilityControl" whose
-   meaning is the same as for folder nodes.
+Inherits from:
+  Collection
 
- * Unless the link node is initially visible, loading of the subdocument
-   must be postponed until the user turns on the link's visibility.
++-------------------+---------------------+----------------+------------------------------------+
+|Member             |Type                 |Values          |Meaning                             |
++===================+=====================+================+====================================+
+|``mapsetjson``     |string               |required        |Version of the MapSetJSON           |
+|                   |                     |                |specification the document conforms |
+|                   |                     |                |to.  For example: ``"0.1"``. The    |
+|                   |                     |                |existence of this member            |
+|                   |                     |                |distinguishes MapSetJSON from other |
+|                   |                     |                |JSON document types.                |
++-------------------+---------------------+----------------+------------------------------------+
+|``url``            |string               |optional        |Canonical URL where this document   |
+|                   |                     |                |can be found.                       |
++-------------------+---------------------+----------------+------------------------------------+
+|``extensions``     |ExtensionsDeclaration|optional        |MapSetJSON extensions needed to     |
+|                   |object               |                |interpret this document.            |
++-------------------+---------------------+----------------+------------------------------------+
+|``view``           |View object          |optional        |View parameters for map when map set|
+|                   |                     |                |is initially loaded. If no view is  |
+|                   |                     |                |specified, the viewer should        |
+|                   |                     |                |initially view the minimum-size     |
+|                   |                     |                |geospatial area that contains all of|
+|                   |                     |                |the map content visible when the map|
+|                   |                     |                |set is first loaded. If no map      |
+|                   |                     |                |content is initially visible, the   |
+|                   |                     |                |viewer may use an arbitrary initial |
+|                   |                     |                |view.                               |
++-------------------+---------------------+----------------+------------------------------------+
 
- * When a link node becomes visible, the viewer must load the
-   subdocument and should display the top-level children of the
-   subdocument root folder as direct children of the link node. The
-   viewer must not display the subdocument root folder as a separate
-   entry. Interface properties of the displayed entry ("name", "open",
-   "visibilityControl") may be specified in either the link node or the
-   subdocument root folder, with the value of each member in the link
-   node overriding the value in the subdocument root folder if both are
-   specified.
-   
-Link Node Type Example
-----------------------
+.. _U.S. Library of Congress Subject Headings: http://id.loc.gov/authorities/subjects.html
+
+Document Example
+----------------
 
 ::
 
   {
-    "type": "Link",
-    "name": "Subfolder Managed by External Organization",
-    "url": "http://example.com/externalLayers.json",
-    "show": false,
-    "open": false,
-    "visibilityControl": "check"
+    // members inherited from Object
+    "type": "Document",
+    "id": "...",
+
+    // members inherited from Node
+    "name": "...",
+    "crs": { (CRS object ) },
+    "bbox": [
+      [-180.0, -90.0],
+      [180.0, 90.0]
+    ],
+    "description": "...",
+    "subject": [
+      "(Key word 1)",
+      ...
+    ],
+    "coverage": "(Human readable description of temporal or spatial coverage)",
+    "creator": "(Name of entity)",
+    "contributors": [
+      "(Name of entity 1)",
+      ...
+    ],
+    "publisher": "...",
+    "rights": "Copyright (C) ...",
+    "license": "http://creativecommons.org/licenses/ ...",
+    "morePermissions": "You may also ...",
+    "dateCreated": "2012-01-30T12:00:00Z",
+    "dateModified": "2012-01-30T12:00:00Z",
+    "dateAdded": "2012-01-30T12:00:00Z",
+
+    // members inherited from Collection
+    "children": [
+      { (Node object 1) },
+      ...
+    ],
+
+    // members defined in Document
+    "mapsetjson": "0.1",
+    "url": "http://example.com/canonicalUrlOfThisDocument.json",
+    "extensions": { (ExtensionsDeclaration object) },
+    "view": { (View object) }
   }
 
-.. View Object:
 
-View Object
-===========
+Layer Class
+~~~~~~~~~~~
 
-The view object ("view" member of the MapSetJSON object) specifies
-the initial map view when the map set is first loaded.
+A Layer object is a Node that does not contain other Nodes. Concrete
+subclasses of Layer are defined in MapSetJSON extensions.
 
- * The view object may have any number of members (name/value pairs).
+Abstract class:
+  Yes
 
- * The view object must have a "type" member, the value of which must be
-   a string indicating the type of view. This specification defines the
-   `Bounding Box View Type`_. Extensions may define additional
-   types.
+Inherits from:
+  Node
 
- * If no view object is specified, the viewer should initially view the
-   minimum-size geospatial area that contains all of the map content
-   visible when the map set is first loaded. If no map content is
-   initially visible, the viewer may use an arbitrary initial view.
++-------------------+----------+----------------+------------------------------------+
+|Member             |Type      |Values          |Meaning                             |
++===================+==========+================+====================================+
+|``show``           |boolean   |``true``        |The layer's contents should be      |
+|                   |          |                |displayed in the map when the map   |
+|                   |          |                |set is first loaded.                |
+|                   |          +----------------+------------------------------------+
+|                   |          |``false``       |The layer's contents should not be  |
+|                   |          |(default)       |displayed. Loading of the contents  |
+|                   |          |                |should be postponed until the user  |
+|                   |          |                |turns on visibility of the layer.   |
++-------------------+----------+----------------+------------------------------------+
+|``drawOrder``      |integer   |optional        |Stacking order for overlapping      |
+|                   |          |(default:       |content in the map. Viewers should  |
+|                   |          |``1000``)       |render layers with higher values on |
+|                   |          |                |top of layers with lower            |
+|                   |          |                |values. Draw order specifications in|
+|                   |          |                |the primary MapSetJSON document take|
+|                   |          |                |precedence over those found in      |
+|                   |          |                |linked content.                     |
++-------------------+----------+----------------+------------------------------------+
+|``master``         |boolean   |``true``        |This layer is the master layer. (The|
+|                   |          |                |document must not have more than one|
+|                   |          |                |master layer.) If this layer's      |
+|                   |          |                |contents contain interface controls,|
+|                   |          |                |such as an initial view or a tour,  |
+|                   |          |                |the viewer should use those controls|
+|                   |          |                |for the overall map set             |
+|                   |          |                |display. Interface controls         |
+|                   |          |                |specified in the primary MapSetJSON |
+|                   |          |                |document (see `View Class`_) take   |
+|                   |          |                |precedence over those found in the  |
+|                   |          |                |master layer.                       |
+|                   |          +----------------+------------------------------------+
+|                   |          |``false``       |This layer is not the master layer. |
+|                   |          |(default)       |                                    |
++-------------------+----------+----------------+------------------------------------+
+|``url``            |URL       |required        |Link to the content of the layer.   |
++-------------------+----------+----------------+------------------------------------+
 
-.. Bounding Box View Type:
+.. View Class:
 
-Bounding Box View Type
-~~~~~~~~~~~~~~~~~~~~~~
+View Class
+~~~~~~~~~~
 
-A bounding box view ("type": "BoundingBox") specifies that the map
-should view the minimum-size area containing the given geospatial
-bounding box.
+A View object defines geospatial viewing parameters for a map.
 
- * A bounding box view may have a "crs" member, which has the same meaning
-   as for a node object.
+Abstract class:
+  Yes
 
- * A bounding box view must have a "bbox" member, the value of which is
-   an array of coordinate pairs as defined in the `GeoJSON bounding box
-   specification`_.
+Inherits from:
+  Object
 
-Bounding Box View Type Example
-------------------------------
+(No additional members.)
+
+.. BoundingBoxView Class:
+
+BoundingBoxView Class
+~~~~~~~~~~~~~~~~~~~~~
+
+A BoundingBoxView object specifies viewing parameters for a map in the
+form of a bounding box. The viewer should display an area around the
+specified bounding box.
+
+Abstract class:
+  No
+
+Inherits from:
+  View
+
++-------------------+----------+----------------+------------------------------------+
+|Member             |Type      |Values          |Meaning                             |
++===================+==========+================+====================================+
+|``crs``            |CRS       |optional        |Coordinate reference system used to |
+|                   |          |(default: WGS84)|interpret coordinates in other      |
+|                   |          |                |members of the object.              |
++-------------------+----------+----------------+------------------------------------+
+|``bbox``           |bounding  |required        |The initial map view should be an   |
+|                   |box       |                |area around this bounding box.      |
++-------------------+----------+----------------+------------------------------------+
+|``scale``          |number    |optional        |Amount by which the bounding box    |
+|                   |          |(default: ``1``)|should be scaled when calculating   |
+|                   |          |                |the view. A value less than 1 means |
+|                   |          |                |to show only a center subset of the |
+|                   |          |                |bounding box. A value greater than 1|
+|                   |          |                |means to include some area outside  |
+|                   |          |                |the bounding box.                   |
++-------------------+----------+----------------+------------------------------------+
+
+BoundingBoxView Example
+-----------------------
 
 This bounding box contains the entire world map and explicitly specifies
 the default WGS84 CRS::
 
   {
+    // members inherited from Object
     "type": "BoundingBox",
+
+    // members defined in BoundingBoxView
     "crs": {
       "type": "name",
       "properties": {
@@ -552,10 +559,9 @@ the default WGS84 CRS::
     "bbox": [
       [-180.0, -90.0],
       [180.0, 90.0]
-    ]
+    ],
+    "scale": 1.0
   }
-
-.. Extensions:
 
 Extensions
 ==========
@@ -563,12 +569,12 @@ Extensions
 This document defines core components of the MapSetJSON specification. Anyone
 may define extensions to the specification.
 
-Extensions Object
-~~~~~~~~~~~~~~~~~
+ExtensionsDeclaration Object
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The extensions object ("extensions" member of the MapSetJSON object)
-specifies the extensions that a MapSetJSON document requires in order to
-be interpreted and displayed properly.
+An ExtensionsDeclaration object declares the extensions that a
+MapSetJSON document requires in order to be interpreted and displayed
+properly.
 
  * The extensions object may have any number of name/value pairs.
 
@@ -588,8 +594,8 @@ be interpreted and displayed properly.
    instance of that node type need not be redundantly prefixed with the
    extension's namespace.
 
-Extensions Object Example
--------------------------
+ExtensionsDeclaration Example
+-----------------------------
 
 ::
 
@@ -634,6 +640,78 @@ Creating New Extensions
 .. _MapSetJSON Extension Registry: http://mapmixer.org/mapsetjson/ext/registry/
 .. _MapSetJSON Home Page:  http://mapmixer.org/mapsetjson/
    
+.. Layer Selection Interface:
+
+Layer Selection Interface
+=========================
+
+When a map set has many layers, viewing all of them simultaneously may
+be too resource intensive or create overwhelming map clutter. The layer
+selection interface allows users to control which layers are visible and
+when their contents are loaded.
+
+Layer Selection Example
+~~~~~~~~~~~~~~~~~~~~~~~
+
+This document::
+
+  {
+    ...
+    "children": [
+      {
+        "type": "kml.KML",
+        "name": "Earthquake Intensity",
+        "url": "http://mapmixer.org/mapsetjson/example/eqintensity.kml",
+        "show": true
+      },
+      {
+        "type": "geojson.GeoJSON",
+        "name": "Fire Vehicle Locations",
+        "url": "http://mapmixer.org/mapsetjson/example/vehicles.json"
+      }
+    ]
+    ...
+  }
+
+Corresponds to this listing in a layer selection interface::
+
+  [X] Earthquake Intensity
+  [ ] Fire Vehicle Locations
+
+The brackets are filled ``[X]`` or empty ``[ ]`` showing whether or not
+the map data is visible in the initial view based on the "show" member,
+which is false by default.
+
+Layer Selection Interface Affordances
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The layer selection interface includes an entry for each MapSetJSON
+node. Each node entry should provide the following affordances:
+
+ * Show/Hide: The user should be able to show the node (displaying its
+   contents in the map) and hide the node.
+
+ * Display Load State: There should be a display (for example, an icon
+   in the node entry) that distinguishes between the following load
+   states:
+
+   * Unloaded: The viewer has not yet attempted to load the node (it is hidden).
+
+   * Loading: The viewer is fetching, parsing, or rendering the node contents.
+
+   * Loaded: The node contents are visible in the map.
+
+   * Error: There was a problem with fetching, parsing, or rendering the node.
+
+ * Refresh: The user should be able to refresh the node contents, causing
+   the viewer to fetch and render any updated external data.
+
+ * View Error: The user should be able to get additional information about the
+   error state of a node.
+
+.. _GeoJSON CRS specification: http://geojson.org/geojson-spec.html#coordinate-reference-system-objects
+.. _GeoJSON bounding box specification: http://geojson.org/geojson-spec.html#bounding-boxes
+
 Acknowledgments
 ===============
 
@@ -648,6 +726,9 @@ The authors would like to thank the following early readers for their
 constructive feedback:
 
  * Ted Scharff (NASA Ames Research Center)
+ * Matt Deans (NASA Ames Research Center)
+ * David Lees (NASA Ames Research Center)
+ * Tamar Cohen (NASA Ames Research Center)
 
 Footnotes
 =========

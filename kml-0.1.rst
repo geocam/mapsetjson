@@ -10,7 +10,7 @@ Revision
   Pre-0.1 draft
 
 Date
-  20 Jan 2012
+  31 Jan 2012
 
 Canonical URL of this document
   http://mapmixer.org/mapsetjson/ext/kml/0.1/
@@ -29,8 +29,12 @@ Introduction
 This extension adds the ability to include KML map layers in a map set.
 It extends the `MapSetJSON Core Specification`_.
 
-.. _MapSetJSON Core Specification: http://mapmixer.org/mapsetjson/spec/0.1/
+This specification refers to the `MapSetJSON Folder Extension`_ and the
+`MapSetJSON Include Extension`_.
 
+.. _MapSetJSON Core Specification: http://mapmixer.org/mapsetjson/spec/0.1/
+.. _MapSetJSON Folder Extension: http://mapmixer.org/mapsetjson/ext/folder/0.1/
+.. _MapSetJSON Include Extension: http://mapmixer.org/mapsetjson/ext/include/0.1/
 
 Examples
 ========
@@ -49,53 +53,102 @@ An example KML node::
     "url": "http://mapmixer.org/mapsetjson/example/eqintensity.kml"
   }
 
-KML Node Type
-=============
+Definitions
+===========
 
-A KML node ("type": "kml.KML") declares a map layer that links to KML
-content:
+The KML file format is defined by the `KML OGC Standard`_. The `KML
+Developer Reference`_ is also useful.
 
- * The behavior of the KML node is modeled on the behavior of the
-   `MapSetJSON Link Node Type`_.
+.. _KML OGC Standard: http://www.opengeospatial.org/standards/kml
+.. _KML Developer Reference: http://code.google.com/apis/kml/documentation/kmlreference.html
 
- * A KML node must have a member "url", whose value is a string
-   specifying the URL of the KML document. The URL may contain a
-   fragment identifier starting with a hash mark #.  If so, the fragment
-   must refer to a node in the external document by its <id> member.
-   The viewer must use the referenced node in place of the subdocument's
-   root node.
+KML Class
+=========
 
- * A KML node may have members "open" and "visibilityControl" whose
-   meaning is the same as for folder nodes.
+A KML object (``"type": "kml.KML"``) declares a map layer that links to KML
+content.
 
- * Like MapSetJSON documents, KML documents have a root node. If the
-   root node is a collection such as a <Folder> or a <Document>, it
-   has children for the purposes of the discussion below. If the root
-   node is not a collection, it has no children.
+The behavior of KML objects is modeled on the behavior of Include
+objects as specified in the `MapSetJSON Include Extension`_. The KML
+subdocument is loaded in the same way as a MapSetJSON subdocument, and
+displayed similarly in the layer selection interface. When the KML
+object is visible, the appearance of the KML content in the map is
+defined by the `KML OGC Standard`_.
 
- * Unless the KML node is initially visible, loading of the subdocument
-   must be postponed until the user turns on the link's visibility.
+We use the following rules to identify corresponding features of KML and
+MapSetJSON documents:
 
- * When a KML node becomes visible, the viewer must load the subdocument
-   and should display the top-level children of the subdocument root
-   node as direct children of the KML node. The viewer must not display
-   the subdocument root node as a separate entry. Interface properties
-   of the displayed entry ("name", "open", "visibilityControl") may be
-   specified in either the KML node or the subdocument root node,
-   with the value of each member in the KML node overriding the value
-   in the subdocument root node if both are specified.
+ * By default, the included node is the top-level tag of the KML
+   subdocument. However, if the ``url`` member of the KML object
+   contains a fragment identifier starting with a hash mark ``#``, the
+   fragment must match the ``id`` attribute of a tag in the KML
+   document, and that tag is the included node.
 
  * For the purposes of controlling the layer selection interface, the
    following equivalencies hold between MapSetJSON members and KML
    members:
 
-   * MapSetJSON "open" = KML <open>. Corresponding values: true=1, false=0.
+   * MapSetJSON ``open`` = KML ``<open>``. Corresponding values:
+     ``true`` = ``1``, ``false`` = ``0``.
 
-   * MapSetJSON "visibilityControl" = KML <listItemStyle>.
+   * MapSetJSON ``visibilityControl`` = KML ``<listItemStyle>``.
 
  * Some viewer implementations may be able to display KML content
-   without being able to introspect it in the layer selection
-   interface. These implementations should document that they "implement
-   the KML extension without introspection support".
+   without being able to introspect its internal structure in the layer
+   selection interface. These implementations should document that they
+   "implement the KML extension without introspection support".
 
-.. _MapSetJSON Link Node Type: http://mapmixer.org/mapsetjson/spec/0.1/#link-node-type
+Abstract class:
+  No
+
+Inherits from:
+  Layer, folder.FolderLike
+
+(No additional members defined.)
+
+KML Example
+~~~~~~~~~~~
+
+::
+
+  {
+    // members inherited from Object
+    "type": "kml.KML",
+    "id": "...",
+
+    // members inherited from Node
+    "name": "...",
+    "crs": { (CRS object ) },
+    "bbox": [
+      [-180.0, -90.0],
+      [180.0, 90.0]
+    ],
+    "description": "...",
+    "subject": [
+      "(Key word 1)",
+      ...
+    ],
+    "coverage": "(Human readable description of temporal or spatial coverage)",
+    "creator": "(Name of entity)",
+    "contributors": [
+      "(Name of entity 1)",
+      ...
+    ],
+    "publisher": "(Name of entity)",
+    "rights": "Copyright (C) ...",
+    "license": "http://creativecommons.org/licenses/ ...",
+    "morePermissions": "You may also ...",
+    "dateCreated": "2012-01-30T12:00:00Z",
+    "dateModified": "2012-01-30T12:00:00Z",
+    "dateAdded": "2012-01-30T12:00:00Z",
+
+    // members inherited from Layer
+    "show": false,
+    "drawOrder": 1000,
+    "master": false,
+    "url": "http://example.com/layer.kml#optionalIdOfTagInKMLDocument",
+
+    // members inherited from folder.FolderLike
+    "open": false,
+    "visibilityControl": "check"
+  }

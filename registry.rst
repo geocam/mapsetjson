@@ -11,26 +11,41 @@ specification.
 Extensions Published by the MapSetJSON Working Group
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- * `Translation`_: Translate text labels in multiple languages
+ * Functional extensions
 
-   * Pre-0.1 draft
+   * `Translation`_: Translate text labels in multiple languages
 
- * `KML`_: Include KML map layers
+     * Pre-0.1 draft
 
-   * Pre-0.1 draft
+   * `Folder`_: Use folders to organize layers within a map set
 
- * `GeoJSON`_: Include GeoJSON map layers
+     * Pre-0.1 draft
 
-   * Pre-0.1 draft
+   * `Include`_: Include external MapSetJSON documents within a map set
 
- * `Refresh`_: Specify refresh behavior of map layers
+     * Pre-0.1 draft
 
-   * Pre-0.1 draft
+   * `Refresh`_: Specify when viewer should refresh map layers
+
+     * Pre-0.1 draft
+
+ * Content type extensions
+
+   * `KML`_: KML map layers
+
+     * Pre-0.1 draft
+
+   * `GeoJSON`_: GeoJSON map layers
+
+     * Pre-0.1 draft
 
 .. _Translation: http://mapmixer.org/mapsetjson/ext/translation/0.1/
+.. _Folder: http://mapmixer.org/mapsetjson/ext/folder/0.1/
+.. _Include: http://mapmixer.org/mapsetjson/ext/include/0.1/
+.. _Refresh: http://mapmixer.org/mapsetjson/ext/refresh/0.1/
+
 .. _KML: http://mapmixer.org/mapsetjson/ext/kml/0.1/
 .. _GeoJSON: http://mapmixer.org/mapsetjson/ext/geojson/0.1/
-.. _Refresh: http://mapmixer.org/mapsetjson/ext/refresh/0.1/
 
 Third Party Extensions
 ~~~~~~~~~~~~~~~~~~~~~~

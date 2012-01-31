@@ -10,7 +10,7 @@ Revision
   Pre-0.1 draft
 
 Date
-  20 Jan 2012
+  31 Jan 2012
 
 Canonical URL of this document
   http://mapmixer.org/mapsetjson/ext/translation/0.1/
@@ -43,46 +43,50 @@ French, or to English as a fallback::
 
   {
     "mapsetjson": "0.1",
+    "type": "Document",
     "extensions": {
       "translation": "http://mapmixer.org/mapsetjson/ext/translation/0.1/",
       "kml": "http://mapmixer.org/mapsetjson/ext/kml/0.1/"
     },
-    "root": {
-      "type": "Folder",
-      "children": [
-        {
-          "type": "kml.KML",
-          "name": "Meteo",
-          "url": "http://mapmixer.org/mapsetjson/example/weather-es.kml"
-        }
-        {
-          "type": "kml.KML",
-          "name": "Niveles de Inundación",
-          "url": "http://mapmixer.org/mapsetjson/example/floodLevels-es.kml"
-        }
-      ]
-    },
+    "children": [
+      {
+        "type": "kml.KML",
+        "name": "Meteo",
+        "url": "http://mapmixer.org/mapsetjson/example/weather-es.kml"
+      }
+      {
+        "type": "kml.KML",
+        "name": "Niveles de Inundación",
+        "url": "http://mapmixer.org/mapsetjson/example/floodLevels-es.kml"
+      }
+    ],
     "translation.defaultLanguages": ["fr", "en"],
     "translation.text": {
-      "Meteo": {
-        "es": "Meteo",
-        "en": "Weather",
-        "fr": "Météo"
-      },
-      "Niveles de Inundación": {
-        "es": "Niveles de Inundación",
-        "en": "Flood Levels"
+      "type": "translation.Translation",
+      "values": {
+        "Meteo": {
+          "es": "Meteo",
+          "en": "Weather",
+          "fr": "Météo"
+        },
+        "Niveles de Inundación": {
+          "es": "Niveles de Inundación",
+          "en": "Flood Levels"
+        }
       }
     },
     "translation.urls": {
-      "http://mapmixer.org/mapsetjson/example/weather-es.kml": {
-        "es": "http://mapmixer.org/mapsetjson/example/weather-es.kml",
-        "en": "http://mapmixer.org/mapsetjson/example/weather-en.kml"
-        "cn": "http://mapmixer.org/mapsetjson/example/weather-cn.kml"
-      },
-      "http://mapmixer.org/mapsetjson/example/floodLevels-es.kml": {
-        "es": "http://mapmixer.org/mapsetjson/example/floodLevels-es.kml",
-        "en": "http://mapmixer.org/mapsetjson/example/floodLevels-en.kml"
+      "type": "translation.Translation",
+      "values": {
+        "http://mapmixer.org/mapsetjson/example/weather-es.kml": {
+          "es": "http://mapmixer.org/mapsetjson/example/weather-es.kml",
+          "en": "http://mapmixer.org/mapsetjson/example/weather-en.kml"
+          "cn": "http://mapmixer.org/mapsetjson/example/weather-cn.kml"
+        },
+        "http://mapmixer.org/mapsetjson/example/floodLevels-es.kml": {
+          "es": "http://mapmixer.org/mapsetjson/example/floodLevels-es.kml",
+          "en": "http://mapmixer.org/mapsetjson/example/floodLevels-en.kml"
+        }
       }
     }
   }
@@ -94,46 +98,45 @@ available::
 
   {
     "mapsetjson": "0.1",
+    "type": "Document",
     "extensions": {
       "kml": "http://mapmixer.org/mapsetjson/ext/kml/0.1/"
     },
-    "root": {
-      "type": "Folder",
-      "children": [
-        {
-          "type": "kml.KML",
-          "name": "Météo",
-          "url": "http://mapmixer.org/mapsetjson/example/weather-en.kml"
-        }
-        {
-          "type": "kml.KML",
-          "name": "Flood levels",
-          "url": "http://mapmixer.org/mapsetjson/example/floodLevels-en.kml"
-        }
-      ]
-    }
+    "children": [
+      {
+        "type": "kml.KML",
+        "name": "Météo",
+        "url": "http://mapmixer.org/mapsetjson/example/weather-en.kml"
+      }
+      {
+        "type": "kml.KML",
+        "name": "Flood levels",
+        "url": "http://mapmixer.org/mapsetjson/example/floodLevels-en.kml"
+      }
+    ]
   }
 
 
 Translation Members
 ===================
 
-This extension defines new members for the MapSetJSON object:
+This extension defines new members for the Document object:
 
- * The MapSetJSON object may have a member
-   "translation.defaultLanguages", whose value is an array of strings
-   specifying preferred languages, in order from most to least
-   preferred, which should be presented to users who do not otherwise
-   specify a language preference. See `Localization Behavior`_.
-
- * The MapSetJSON object may have a member "translation.text", whose
-   value is a translation object that provides localized versions of
-   text labels ("name" members). See `Translation Objects`_.
-
- * The MapSetJSON object may have a member "translation.urls", whose
-   value is a translation object that provides URLs ("url" members)
-   referring to localized versions of linked subdocuments. See
-   `Translation Objects`_.
++--------------------------------+-----------+----------------+------------------------------------+
+|Member                          |Type       |Values          |Meaning                             |
++================================+===========+================+====================================+
+|``translation.defaultLanguages``|array of   |optional        |Default preferred languages in order|
+|                                |strings    |                |from most to least preferred. Used  |
+|                                |           |                |when the user has not specified     |
+|                                |           |                |their own preferences. See          |
+|                                |           |                |`Localization Behavior`_.           |
++--------------------------------+-----------+----------------+------------------------------------+
+|``translation.text``            |Translation|optional        |Localized versions of text labels.  |
+|                                |object     |                |                                    |
++--------------------------------+-----------+----------------+------------------------------------+
+|``translation.urls``            |Translation|optional        |URLs referring to localized versions|
+|                                |object     |                |of linked content.                  |
++--------------------------------+-----------+----------------+------------------------------------+
 
 .. Localized String Objects:
 
@@ -177,9 +180,23 @@ Translation Objects
 
 A translation object specifies a lookup table of language translations.
 
- * A translation object may have any number of name/value pairs. The name
-   specifies an original string as it appears in the MapSetJSON document.
-   The value is a localized string object (see `Localized String Objects`_).
+Abstract class:
+  No
+
+Inherits from:
+  Object
+
++------------------+---------+----------------+------------------------------------+
+|Member            |Type     |Values          |Meaning                             |
++==================+=========+================+====================================+
+|``values``        |object   |required        |Name/value pairs map from original  |
+|                  |         |                |strings as they appear in the       |
+|                  |         |                |MapSetJSON document to localized    |
+|                  |         |                |string objects containing           |
+|                  |         |                |translations to target              |
+|                  |         |                |languages. See `Localized String    |
+|                  |         |                |Objects`_.                          |
++------------------+---------+----------------+------------------------------------+
 
 Translation Object Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -190,13 +207,21 @@ the original version of the label that appears in the MapSetJSON
 document::
 
   {
-    "Meteo": {
-      "en": "Weather",
-      "es": "Meteo"
-    },
-    "Niveles de Inundación": {
-      "en": "Flood Levels",
-      "es": "Niveles de Inundación"
+    // members inherited from Object
+    "type": "translation.Translation",
+    "alternateTypes": ["(Alternate type 1)", ...],
+    "id": "...",
+
+    // members defined in translation.Translation
+    "values": {
+      "Meteo": {
+        "en": "Weather",
+        "es": "Meteo"
+      },
+      "Niveles de Inundación": {
+        "en": "Flood Levels",
+        "es": "Niveles de Inundación"
+      }
     }
   }
 

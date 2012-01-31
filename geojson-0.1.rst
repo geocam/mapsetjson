@@ -10,7 +10,7 @@ Revision
   Pre-0.1 draft
 
 Date
-  20 Jan 2012
+  31 Jan 2012
 
 Canonical URL of this document
   http://mapmixer.org/mapsetjson/ext/geojson/0.1/
@@ -29,8 +29,10 @@ Introduction
 This extension adds the ability to include GeoJSON map layers in a map set.
 It extends the `MapSetJSON Core Specification`_.
 
-.. _MapSetJSON Core Specification: http://mapmixer.org/mapsetjson/spec/0.1/
+This specification refers to the `MapSetJSON Include Extension`_.
 
+.. _MapSetJSON Core Specification: http://mapmixer.org/mapsetjson/spec/0.1/
+.. _MapSetJSON Include Extension: http://mapmixer.org/mapsetjson/ext/include/0.1/
 
 Examples
 ========
@@ -49,34 +51,42 @@ An example GeoJSON node::
     "url": "http://mapmixer.org/mapsetjson/example/vehicles.json"
   }
 
-GeoJSON Node Type
-=================
+Definitions
+===========
 
-A GeoJSON node ("type": "geojson.GeoJSON") declares a map layer that links to GeoJSON
-content:
+The GeoJSON file format is defined by the `GeoJSON Format Specification`_.
 
- * The behavior of the GeoJSON node is modeled on the behavior of the
-   `MapSetJSON Link Node Type`_.
+.. _GeoJSON Format Specification: http://geojson.org/geojson-spec.html
 
- * A GeoJSON node must have a member "url", whose value is a string
-   specifying the URL of the GeoJSON document. This extension does not
-   define the behavior if the URL has a fragment identifier starting
-   with a hash mark #.
+GeoJSON Class
+=============
 
- * This extension does not define any introspection capabilities within
-   GeoJSON documents.
+A GeoJSON object (``"type": "geojson.GeoJSON"``) declares a map layer that
+links to GeoJSON content. The behavior of the GeoJSON object is modeled on
+the behavior of the `MapSetJSON Include Extension`_. The GeoJSON
+subdocument is loaded in the same way as a MapSetJSON subdocument.
 
- * This extension does not define how GeoJSON map content should be
-   styled in the map. Note that there are existing implementations of
-   default styling, such as the `OpenLayers GeoJSON
-   implementation`_. Future versions of this extension may define a
-   styling mechanism.
+The GeoJSON Format Specification does not define how GeoJSON content should
+be styled in a map. Viewers may implement any appropriate styling, and may
+wish to draw their default styling from a reference implementation such as
+the `OpenLayers GeoJSON implementation`_.
 
- * Unless the GeoJSON node is initially visible, loading of the subdocument
-   must be postponed until the user turns on the link's visibility.
+ * Future versions of this extension may define the behavior if the
+   ``url`` member has a fragment identifier starting with a hash mark
+   ``#``.
 
- * When a GeoJSON node becomes visible, the viewer must load the subdocument
-   and render its contents in the map.
+ * Future versions of this extension may define introspection
+   capabilities within GeoJSON documents.
 
-.. _MapSetJSON Link Node Type: http://mapmixer.org/mapsetjson/spec/0.1/#link-node-type
+ * Future versions of this extension may define a styling mechanism.
+
+Abstract class:
+  No
+
+Inherits from:
+  Layer
+
+(No additional members defined.)
+
+.. _MapSetJSON Include Extension: http://mapmixer.org/mapsetjson/ext/include/0.1/
 .. _OpenLayers GeoJSON implementation: http://openlayers.org/dev/examples/vector-formats.html
